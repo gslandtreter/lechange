@@ -1,6 +1,9 @@
 package org.LeChange.Database;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
+import org.LeChange.DAO.Livro;
 import org.LeChange.DAO.User;
 
 public class Database {
@@ -26,6 +29,13 @@ public class Database {
 	    return conn;
 	  }
 	 
+	 public Collection<Livro> getUserBooks(User usuario) {
+		 Collection<Livro> livrosUsuario = new ArrayList<Livro>();
+		 
+		 //TODO: Pegar livros do usuario na DB. Meh...
+		 
+		 return livrosUsuario;
+	 }
 	 public User getUser(String userName, String password) {
 		 
 		 if(conn == null)
