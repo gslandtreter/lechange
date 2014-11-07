@@ -11,7 +11,8 @@ public class Main {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		LoginWindow.main(args);
+		LoginWindow mainWindow = new LoginWindow();
+		mainWindow.main(args);
 		
 	}
 

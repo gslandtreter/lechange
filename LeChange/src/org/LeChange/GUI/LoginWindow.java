@@ -9,7 +9,6 @@ import javax.swing.JPasswordField;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import java.awt.GridLayout;
 import javax.swing.JButton;
 
 import org.LeChange.DAO.User;
@@ -18,6 +17,10 @@ import org.LeChange.Database.Database;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.SwingConstants;
+import java.awt.Color;
 
 public class LoginWindow {
 
@@ -28,7 +31,7 @@ public class LoginWindow {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -79,10 +82,8 @@ public class LoginWindow {
 		JButton btnLogin = new JButton("LOGIN!");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				Database db = new Database();
-				
-				User usuario = db.getUser(textUsername.getText(), textPassword.getText());
+							
+				User usuario = Database.getUser(textUsername.getText(), textPassword.getText());
 				
 				if(usuario != null)
 					System.out.println("Logou como " + usuario.getUserName());
@@ -92,5 +93,30 @@ public class LoginWindow {
 		});
 		btnLogin.setBounds(170, 169, 89, 23);
 		panel.add(btnLogin);
+		
+		JLabel lblUsurio = new JLabel("ID");
+		lblUsurio.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblUsurio.setBounds(79, 87, 44, 14);
+		panel.add(lblUsurio);
+		
+		JLabel lblSenha = new JLabel("Senha");
+		lblSenha.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblSenha.setBounds(69, 137, 54, 14);
+		panel.add(lblSenha);
+		
+		JLabel lblCadastrarNovaConta = new JLabel("Cadastrar nova conta");
+		lblCadastrarNovaConta.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblCadastrarNovaConta.setForeground(new Color(0, 0, 153));
+		lblCadastrarNovaConta.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCadastrarNovaConta.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				RegisterWindow registerWindow = new RegisterWindow();
+				registerWindow.main(null);
+			}
+		});
+		lblCadastrarNovaConta.setBounds(133, 219, 160, 14);
+		panel.add(lblCadastrarNovaConta);
 	}
 }

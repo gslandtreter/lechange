@@ -14,7 +14,7 @@ public class Database {
 		getConnection();
 	}
 	
-	 public Connection getConnection() {
+	 public static Connection getConnection() {
 	    try {
 	      Class.forName("org.sqlite.JDBC");
 	      conn = DriverManager.getConnection("jdbc:sqlite:lechange.db");
@@ -29,14 +29,95 @@ public class Database {
 	    return conn;
 	  }
 	 
-	 public Collection<Livro> getUserBooks(User usuario) {
+	 public static Collection<Livro> getUserBooks(User usuario) {
 		 Collection<Livro> livrosUsuario = new ArrayList<Livro>();
 		 
 		 //TODO: Pegar livros do usuario na DB. Meh...
 		 
 		 return livrosUsuario;
 	 }
-	 public User getUser(String userName, String password) {
+	 public static User registerUser(String userName, String password) {
+		 if(conn == null)
+			 getConnection();
+		 
+		 if(userExists(userName)) {
+			 System.out.println("Usuario ja existe!");
+			 return null;
+		 }
+		 
+		 PreparedStatement stmt = null;
+		 try {
+			 stmt = conn.prepareStatement("Insert into usuarios (username, password) VALUES (?,?)");
+			 stmt.setString(1, userName);
+			 stmt.setString(2, password);
+
+			 stmt.executeUpdate();
+			  
+		 }
+		 catch (SQLException e) {
+			 e.printStackTrace();
+		 }
+	      
+		 finally {
+			 if(stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			 }
+		 }
+		 
+		 return getUser(userName, password);
+	 }
+	 public static boolean userExists(String userName) {
+		 if(conn == null)
+			 getConnection();
+		 
+		 boolean userFound = false;
+		 
+		 PreparedStatement stmt = null;
+		 ResultSet rs = null;
+		 try {
+			 stmt = conn.prepareStatement("Select * from usuarios WHERE username = ?");
+			 
+			 stmt.setString(1, userName);
+			 
+			 rs = stmt.executeQuery();
+			 
+			 if(rs != null) {
+			 
+				  if ( rs.next() ) {
+					  userFound = true;
+				  }
+				  
+				  rs.close();
+				 }
+		 }
+		 catch (SQLException e) {
+			 e.printStackTrace();
+		 }
+	      
+		 finally {
+			 if(stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			 }
+			 if(rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+			 }
+		 }
+		 
+		 return userFound;
+	 }
+	 public static User getUser(String userName, String password) {
 		 
 		 if(conn == null)
 			 getConnection();
