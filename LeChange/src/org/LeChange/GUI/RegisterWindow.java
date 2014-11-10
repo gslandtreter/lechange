@@ -51,7 +51,7 @@ public class RegisterWindow {
 	private void initialize() {
 		frmCadastro = new JFrame();
 		frmCadastro.setTitle("Cadastro");
-		frmCadastro.setBounds(100, 100, 450, 300);
+		frmCadastro.setBounds(100, 100, 450, 225);
 		frmCadastro.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frmCadastro.getContentPane().setLayout(null);
 		
@@ -86,15 +86,16 @@ public class RegisterWindow {
 		JButton btnCadastro = new JButton("Cadastrar");
 		btnCadastro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CadastraUsuario();
+				User novoUsuario = CadastraUsuario();
+				
+				if(novoUsuario != null) {
+					//Usuario criado com sucesso
+					UsuarioCriado();
+				}
 			}
 		});
-		btnCadastro.setBounds(200, 131, 89, 23);
+		btnCadastro.setBounds(173, 131, 140, 23);
 		frmCadastro.getContentPane().add(btnCadastro);
-		
-		JLabel lblAguardandoDadosDe = new JLabel("Aguardando Dados de Entrada");
-		lblAguardandoDadosDe.setBounds(53, 183, 260, 14);
-		frmCadastro.getContentPane().add(lblAguardandoDadosDe);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -103,14 +104,25 @@ public class RegisterWindow {
 		if(textUsername.getText().length() > 4 && passwordField.getText().length() > 4) {
 			
 			if(!passwordField.getText().equals(passwordFieldConfirma.getText())) {
-				System.out.println("Senhas nao batem!");
+				Popup popup = new Popup("Senhas nao batem!");
+				popup.main();
 				return null;
 			}
 			
-			return Database.registerUser(textUsername.getText(), passwordField.getText());
+			User retUser =  Database.registerUser(textUsername.getText(), passwordField.getText());
 			
+			if(retUser != null) {
+				Popup popup = new Popup("Usuario criado com sucesso!");
+				popup.main();
+				return retUser;
+			}
 		}
-		System.out.println("Dados invalidos");
+		Popup popup = new Popup("Dados Invalidos!");
+		popup.main();
 		return null;
+	}
+	
+	private void UsuarioCriado(){
+		frmCadastro.dispose();
 	}
 }

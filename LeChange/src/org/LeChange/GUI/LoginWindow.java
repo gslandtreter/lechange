@@ -85,10 +85,17 @@ public class LoginWindow {
 							
 				User usuario = Database.getUser(textUsername.getText(), textPassword.getText());
 				
-				if(usuario != null)
-					System.out.println("Logou como " + usuario.getUserName());
-				else
-					System.out.println("Usuario Invalido!");
+				if(usuario != null){
+					Popup popup = new Popup("Logou como " + usuario.getUserName());
+					popup.main();
+					//System.out.println("Logou como " + usuario.getUserName());
+					LoginOK();
+				}
+				else {
+					//System.out.println("Usuario Invalido!");
+					Popup popup = new Popup("Usuario Invalido!");
+					popup.main();
+				}
 			}
 		});
 		btnLogin.setBounds(170, 169, 89, 23);
@@ -118,5 +125,11 @@ public class LoginWindow {
 		});
 		lblCadastrarNovaConta.setBounds(133, 219, 160, 14);
 		panel.add(lblCadastrarNovaConta);
+	}
+	
+	private void LoginOK() {
+		frmLechange.setVisible(false);
+		MainWindow mainWindow = new MainWindow();
+		mainWindow.main();
 	}
 }
