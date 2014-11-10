@@ -1,12 +1,10 @@
 package org.LeChange.GUI;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import java.awt.Window.Type;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
@@ -112,6 +110,11 @@ public class RegisterBook extends JFrame {
 		contentPane.add(btnOk);
 		
 		JButton btnCancelar = new JButton("Cancelar");
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Dispose();
+			}
+		});
 		btnCancelar.setBounds(244, 158, 89, 23);
 		contentPane.add(btnCancelar);
 	}

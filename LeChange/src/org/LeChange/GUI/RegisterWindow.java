@@ -78,9 +78,9 @@ public class RegisterWindow {
 		passwordFieldConfirma.setBounds(173, 100, 140, 20);
 		frmCadastro.getContentPane().add(passwordFieldConfirma);
 		
-		JLabel lblRepitirASenha = new JLabel("Favor repitir a senha");
+		JLabel lblRepitirASenha = new JLabel("Favor repetir a Senha");
 		lblRepitirASenha.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblRepitirASenha.setBounds(45, 103, 118, 14);
+		lblRepitirASenha.setBounds(10, 103, 153, 14);
 		frmCadastro.getContentPane().add(lblRepitirASenha);
 		
 		JButton btnCadastro = new JButton("Cadastrar");
