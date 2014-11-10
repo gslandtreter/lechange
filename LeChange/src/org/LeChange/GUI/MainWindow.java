@@ -3,10 +3,19 @@ package org.LeChange.GUI;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+import org.LeChange.DAO.User;
+
+import java.awt.Font;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class MainWindow {
 
 	private JFrame frmLechange;
+	private JLabel lblTitle;
 
 	/**
 	 * Launch the application.
@@ -29,6 +38,21 @@ public class MainWindow {
 	 */
 	public MainWindow() {
 		initialize();
+		lblTitle.setText(lblTitle.getText() + " > Pagina pessoal > " + User.getCurrentUser().getUserName());
+		
+		JButton btnCadastraLivro = new JButton("Cadastrar Novo Livro");
+		btnCadastraLivro.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				RegisterBook registerWindow = new RegisterBook();
+				registerWindow.main();
+			}
+		});
+		btnCadastraLivro.setBounds(20, 66, 160, 80);
+		frmLechange.getContentPane().add(btnCadastraLivro);
+	}
+	
+	public boolean isVisible() {
+		return frmLechange != null && frmLechange.isVisible();
 	}
 
 	/**
@@ -39,6 +63,11 @@ public class MainWindow {
 		frmLechange.setTitle("Lechange");
 		frmLechange.setBounds(100, 100, 620, 400);
 		frmLechange.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmLechange.getContentPane().setLayout(null);
+		
+		lblTitle = new JLabel("LeChange");
+		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 19));
+		lblTitle.setBounds(10, 11, 584, 44);
+		frmLechange.getContentPane().add(lblTitle);
 	}
-
 }

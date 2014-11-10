@@ -86,9 +86,7 @@ public class LoginWindow {
 				User usuario = Database.getUser(textUsername.getText(), textPassword.getText());
 				
 				if(usuario != null){
-					Popup popup = new Popup("Logou como " + usuario.getUserName());
-					popup.main();
-					//System.out.println("Logou como " + usuario.getUserName());
+					User.setCurrentUser(usuario);
 					LoginOK();
 				}
 				else {

@@ -9,6 +9,15 @@ public class User {
 	private Collection<Livro> livrosCadastrados;
 	private Collection<Livro> livrosDesejados;
 	
+	private static User currentUser = null;
+	
+	public static User getCurrentUser() {
+		return currentUser;
+	}
+	public static void setCurrentUser(User currentUser) {
+		User.currentUser = currentUser;
+	}
+	
 	public int getId() {
 		return id;
 	}

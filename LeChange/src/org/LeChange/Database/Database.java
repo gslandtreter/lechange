@@ -42,6 +42,7 @@ public class Database {
 		 
 		 if(userExists(userName)) {
 			 System.out.println("Usuario ja existe!");
+			 //TODO: popup.
 			 return null;
 		 }
 		 
@@ -69,6 +70,47 @@ public class Database {
 		 }
 		 
 		 return getUser(userName, password);
+	 }
+	 
+	 public static Livro registerBook(Livro bookToRegister) {
+		 
+		 if(conn == null)
+			 getConnection(); 
+		 
+		 if(bookToRegister == null)
+			 return null;
+		 
+		 PreparedStatement stmt = null;
+		 try {
+			 stmt = conn.prepareStatement("Insert into livros (owner_id, title, author) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			 stmt.setInt(1, bookToRegister.getIdOwner());
+			 stmt.setString(2, bookToRegister.getTitulo());
+			 stmt.setString(3, bookToRegister.getAutor());
+
+			 stmt.executeUpdate();
+			 
+			 ResultSet rs = stmt.getGeneratedKeys();
+			 
+			 if(rs.next()) {
+				 bookToRegister.setId(rs.getInt(1));
+			 }
+			  
+		 }
+		 catch (SQLException e) {
+			 e.printStackTrace();
+		 }
+	      
+		 finally {
+			 if(stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			 }
+		 }
+		 
+		 return bookToRegister.getId() != 0 ? bookToRegister : null;
 	 }
 	 public static boolean userExists(String userName) {
 		 if(conn == null)
