@@ -57,7 +57,7 @@ public class LoginWindow {
 	private void initialize() {
 		frmLechange = new JFrame();
 		frmLechange.setTitle("LeChange 0.1");
-		frmLechange.setBounds(100, 100, 450, 300);
+		frmLechange.setBounds(100, 100, 440, 300);
 		frmLechange.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel panel = new JPanel();
