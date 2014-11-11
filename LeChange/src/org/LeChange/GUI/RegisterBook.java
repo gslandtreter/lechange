@@ -26,6 +26,7 @@ public class RegisterBook extends JFrame {
 	private JPanel contentPane;
 	private JTextField textField_Titulo;
 	private JTextField textField_Autor;
+	private JTextField textField_Detalhes;
 
 	/**
 	 * Launch the application.
@@ -86,6 +87,8 @@ public class RegisterBook extends JFrame {
 					novoLivro.setIdOwner(User.getCurrentUser().getId());
 					novoLivro.setTitulo(textField_Titulo.getText());
 					novoLivro.setAutor(textField_Autor.getText());
+					novoLivro.setDetalhes(textField_Detalhes.getText());
+					
 					if (status == 0)
 					{
 						novoLivro.setStatus("POSSUI");
@@ -114,7 +117,7 @@ public class RegisterBook extends JFrame {
 					
 			}
 		});
-		btnOk.setBounds(110, 158, 89, 23);
+		btnOk.setBounds(110, 203, 89, 23);
 		contentPane.add(btnOk);
 		
 		JButton btnCancelar = new JButton("Cancelar");
@@ -123,8 +126,18 @@ public class RegisterBook extends JFrame {
 				Dispose();
 			}
 		});
-		btnCancelar.setBounds(244, 158, 89, 23);
+		btnCancelar.setBounds(250, 203, 89, 23);
 		contentPane.add(btnCancelar);
+		
+		JLabel lblDetalhes = new JLabel("Detalhes");
+		lblDetalhes.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblDetalhes.setBounds(62, 111, 82, 14);
+		contentPane.add(lblDetalhes);
+		
+		textField_Detalhes = new JTextField();
+		textField_Detalhes.setColumns(10);
+		textField_Detalhes.setBounds(154, 108, 165, 84);
+		contentPane.add(textField_Detalhes);
 	}
 
 	protected void Dispose() {

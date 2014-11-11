@@ -2,6 +2,7 @@ package org.LeChange.Database;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.LeChange.DAO.Livro;
 import org.LeChange.DAO.User;
@@ -72,6 +73,95 @@ public class Database {
 		 return getUser(userName, password);
 	 }
 	 
+	 public static boolean reservaLivro(Livro livro) {
+		 
+		 if(livro == null)
+			 return false;
+		 
+		 if(conn == null)
+			 getConnection();
+		 
+		 PreparedStatement stmt = null;
+		 try {
+			 stmt = conn.prepareStatement("update livros SET status = 'RESERVADO' where id = ?", Statement.RETURN_GENERATED_KEYS);
+			 stmt.setInt(1, livro.getId());
+
+			 stmt.executeUpdate();
+			 
+		 }
+		 catch (SQLException e) {
+			 e.printStackTrace();
+		 }
+	      
+		 finally {
+			 if(stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			 }
+		 }
+		 
+		 return true;
+	 }
+	 public static List<Livro> getBookList(User baseUser) {
+		 
+		 if(baseUser == null)
+			 return null;
+		 
+		 if(conn == null)
+			 getConnection();
+		 
+		 List<Livro> bookList = new ArrayList<Livro>();
+		 
+		 PreparedStatement stmt = null;
+		 ResultSet rs = null;
+		 try {
+			 stmt = conn.prepareStatement("Select * from livros WHERE owner_id != ? AND status = 'POSSUI'");
+			 
+			 stmt.setInt(1, baseUser.getId());
+			 
+			 rs = stmt.executeQuery();
+			 
+			  while ( rs.next() ) {
+				  
+				  Livro livroEncontrado = new Livro();
+				  
+				  livroEncontrado.setId(rs.getInt("id"));
+				  livroEncontrado.setIdOwner(rs.getInt("owner_id"));
+				  livroEncontrado.setTitulo(rs.getString("title"));
+				  livroEncontrado.setAutor(rs.getString("author"));
+				  livroEncontrado.setDetalhes(rs.getString("detalhes"));
+				  
+				  bookList.add(livroEncontrado);
+			  }
+			  
+			  rs.close();
+		 }
+		 catch (SQLException e) {
+			 e.printStackTrace();
+		 }
+	      
+		 finally {
+			 if(stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			 }
+			 if(rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+			 }
+		 }
+		 
+		 return bookList;
+	 }
 	 public static Livro registerBook(Livro bookToRegister) {
 		 
 		 if(conn == null)
@@ -82,11 +172,12 @@ public class Database {
 		 
 		 PreparedStatement stmt = null;
 		 try {
-			 stmt = conn.prepareStatement("Insert into livros (owner_id, title, author, status) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			 stmt = conn.prepareStatement("Insert into livros (owner_id, title, author, status, detalhes) VALUES (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			 stmt.setInt(1, bookToRegister.getIdOwner());
 			 stmt.setString(2, bookToRegister.getTitulo());
 			 stmt.setString(3, bookToRegister.getAutor());
 			 stmt.setString(4, bookToRegister.getStatus());
+			 stmt.setString(5, bookToRegister.getDetalhes());
 
 			 stmt.executeUpdate();
 			 

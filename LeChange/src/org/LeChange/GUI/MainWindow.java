@@ -59,6 +59,16 @@ public class MainWindow {
 		});
 		btnCadastraLivroDesejado.setBounds(200, 66, 160, 80);
 		frmLechange.getContentPane().add(btnCadastraLivroDesejado);
+		
+		JButton btnBuscarLivros = new JButton("Buscar Livros");
+		btnBuscarLivros.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				BookList bookWindow = new BookList();
+				bookWindow.main();
+			}
+		});
+		btnBuscarLivros.setBounds(20, 157, 160, 80);
+		frmLechange.getContentPane().add(btnBuscarLivros);
 	}
 	
 	public boolean isVisible() {

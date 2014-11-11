@@ -9,6 +9,15 @@ public class Livro {
 	
 	private String titulo;
 	private String autor;
+	
+	private String detalhes;
+	
+	public String getDetalhes() {
+		return detalhes;
+	}
+	public void setDetalhes(String detalhes) {
+		this.detalhes = detalhes;
+	}
 	public int getId() {
 		return id;
 	}
