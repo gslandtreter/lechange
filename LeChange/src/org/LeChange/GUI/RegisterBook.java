@@ -34,7 +34,7 @@ public class RegisterBook extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					RegisterBook frame = new RegisterBook();
+					RegisterBook frame = new RegisterBook(0);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -46,7 +46,7 @@ public class RegisterBook extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public RegisterBook() {
+	public RegisterBook(final int status) {
 		setTitle("Cadastrar Livro");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -86,6 +86,14 @@ public class RegisterBook extends JFrame {
 					novoLivro.setIdOwner(User.getCurrentUser().getId());
 					novoLivro.setTitulo(textField_Titulo.getText());
 					novoLivro.setAutor(textField_Autor.getText());
+					if (status == 0)
+					{
+						novoLivro.setStatus("POSSUI");
+					}
+					else
+					{
+						novoLivro.setStatus("DESEJA");
+					}
 					
 					novoLivro = Database.registerBook(novoLivro);
 					

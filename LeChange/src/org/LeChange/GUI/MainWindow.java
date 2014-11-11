@@ -43,12 +43,22 @@ public class MainWindow {
 		JButton btnCadastraLivro = new JButton("Cadastrar Novo Livro");
 		btnCadastraLivro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				RegisterBook registerWindow = new RegisterBook();
+				RegisterBook registerWindow = new RegisterBook(0);
 				registerWindow.main();
 			}
 		});
 		btnCadastraLivro.setBounds(20, 66, 160, 80);
 		frmLechange.getContentPane().add(btnCadastraLivro);
+		
+		JButton btnCadastraLivroDesejado = new JButton("Cadastrar Livro Desejado");
+		btnCadastraLivroDesejado.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				RegisterBook registerWindow = new RegisterBook(1);
+				registerWindow.main();
+			}
+		});
+		btnCadastraLivroDesejado.setBounds(200, 66, 160, 80);
+		frmLechange.getContentPane().add(btnCadastraLivroDesejado);
 	}
 	
 	public boolean isVisible() {

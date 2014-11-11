@@ -82,10 +82,11 @@ public class Database {
 		 
 		 PreparedStatement stmt = null;
 		 try {
-			 stmt = conn.prepareStatement("Insert into livros (owner_id, title, author) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			 stmt = conn.prepareStatement("Insert into livros (owner_id, title, author, status) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			 stmt.setInt(1, bookToRegister.getIdOwner());
 			 stmt.setString(2, bookToRegister.getTitulo());
 			 stmt.setString(3, bookToRegister.getAutor());
+			 stmt.setString(4, bookToRegister.getStatus());
 
 			 stmt.executeUpdate();
 			 

@@ -5,6 +5,8 @@ public class Livro {
 	private int id;
 	private int idOwner;
 	
+	private String status;
+	
 	private String titulo;
 	private String autor;
 	public int getId() {
@@ -30,6 +32,14 @@ public class Livro {
 	}
 	public void setAutor(String autor) {
 		this.autor = autor;
+	}
+	
+	public String getStatus(){
+		return status;
+	}
+	
+	public void setStatus(String status){
+		this.status = status;
 	}
 	
 	
