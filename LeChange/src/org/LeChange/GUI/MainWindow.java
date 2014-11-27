@@ -1,16 +1,23 @@
 package org.LeChange.GUI;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import org.LeChange.DAO.User;
 
 import java.awt.Font;
+
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 
 public class MainWindow {
 
@@ -57,18 +64,53 @@ public class MainWindow {
 				registerWindow.main();
 			}
 		});
-		btnCadastraLivroDesejado.setBounds(200, 66, 160, 80);
+		btnCadastraLivroDesejado.setBounds(200, 66, 178, 80);
 		frmLechange.getContentPane().add(btnCadastraLivroDesejado);
 		
 		JButton btnBuscarLivros = new JButton("Buscar Livros");
 		btnBuscarLivros.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				BookList bookWindow = new BookList();
-				bookWindow.main();
+				BookList bookWindow = new BookList(0);
+				bookWindow.main(0);
 			}
 		});
 		btnBuscarLivros.setBounds(20, 157, 160, 80);
 		frmLechange.getContentPane().add(btnBuscarLivros);
+		
+		JButton btnExcluirLivros = new JButton("Excluir Livros");
+		btnExcluirLivros.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				BookList bookWindow = new BookList(1);
+				bookWindow.main(1);
+			}
+		});
+		btnExcluirLivros.setBounds(200, 157, 178, 80);
+		frmLechange.getContentPane().add(btnExcluirLivros);
+		
+		JButton btnBuscarUsuario = new JButton("Buscar Usuário");
+		btnBuscarUsuario.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				UserList userWindow = new UserList();
+				userWindow.main();
+			}
+		});
+		btnBuscarUsuario.setBounds(20, 248, 160, 80);
+		frmLechange.getContentPane().add(btnBuscarUsuario);
+		
+		/*
+		JLabel lblSair = new JLabel("Sair");
+		lblSair.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblSair.setForeground(new Color(0, 0, 153));
+		lblSair.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSair.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				MainWindow.this.frmLechange.dispatchEvent(new WindowEvent(frmLechange, WindowEvent.WINDOW_CLOSING));
+			}
+		});
+		lblSair.setBounds(133, 219, 420, 14);
+		frmLechange.getContentPane().add(lblSair);
+		 */
 	}
 	
 	public boolean isVisible() {
