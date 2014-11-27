@@ -32,13 +32,12 @@ public class BookList extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public void main() {
+	public void main(final int status) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					BookList frame = new BookList();
+					BookList frame = new BookList(status);
 					frame.setVisible(true);
-
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -50,7 +49,7 @@ public class BookList extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public BookList() {
+	public BookList(int status) {
 		setTitle("Livros");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -71,37 +70,72 @@ public class BookList extends JFrame {
 		btnDetalhes.setBounds(43, 228, 128, 23);
 		contentPane.add(btnDetalhes);
 		
-		JButton btnSolicitaTroca = new JButton("Solicita Troca");
-		btnSolicitaTroca.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				int selectedIndex = list.getSelectedIndex();
-				
-				if(selectedIndex == -1) {
-					Popup popup = new Popup("Selecione um livro!");
-					popup.main();
-					return;
+		if (status==0)
+		{
+			JButton btnSolicitaTroca = new JButton("Solicita Troca");
+			btnSolicitaTroca.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+					int selectedIndex = list.getSelectedIndex();
+					
+					if(selectedIndex == -1) {
+						Popup popup = new Popup("Selecione um livro!");
+						popup.main();
+						return;
+					}
+					
+					Livro livroSelecionado = livros.get(selectedIndex);
+					
+					boolean retVal = Database.reservaLivro(livroSelecionado);
+					
+					if(retVal) {
+						Popup popup = new Popup("Livro reservado com sucesso!");
+						popup.main();
+						Dispose();
+					}
+					else {
+						Popup popup = new Popup("Erro ao reservar livro!");
+						popup.main();
+					}
 				}
-				
-				Livro livroSelecionado = livros.get(selectedIndex);
-				
-				boolean retVal = Database.reservaLivro(livroSelecionado);
-				
-				if(retVal) {
-					Popup popup = new Popup("Livro reservado com sucesso!");
-					popup.main();
-					Dispose();
+			});
+			btnSolicitaTroca.setBounds(257, 228, 128, 23);
+			contentPane.add(btnSolicitaTroca);
+			
+			CarregaLivros();
+		}
+		else
+		{
+			JButton btnExcluirLivro = new JButton("Excluir Livro");
+			btnExcluirLivro.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+					int selectedIndex = list.getSelectedIndex();
+					
+					if(selectedIndex == -1) {
+						Popup popup = new Popup("Selecione um livro!");
+						popup.main();
+						return;
+					}
+					
+					Livro livroSelecionado = livros.get(selectedIndex);
+					
+					boolean retVal = Database.excluiLivro(livroSelecionado);
+					
+					if(retVal) {
+						Popup popup = new Popup("Livro excluído com sucesso!");
+						popup.main();
+						Dispose();
+					}
+					else {
+						Popup popup = new Popup("Erro ao excluir livro!");
+						popup.main();
+					}
 				}
-				else {
-					Popup popup = new Popup("Erro ao reservar livro!");
-					popup.main();
-				}
-			}
-		});
-		btnSolicitaTroca.setBounds(257, 228, 128, 23);
-		contentPane.add(btnSolicitaTroca);
-		
-		CarregaLivros();
+			});
+			btnExcluirLivro.setBounds(257, 228, 128, 23);
+			contentPane.add(btnExcluirLivro);
+		}
 	}
 
 	private void CarregaLivros() {
