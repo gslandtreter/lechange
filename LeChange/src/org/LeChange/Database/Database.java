@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.LeChange.DAO.Livro;
+import org.LeChange.DAO.Transaction;
 import org.LeChange.DAO.User;
 
 public class Database {
@@ -30,20 +31,12 @@ public class Database {
 	    return conn;
 	  }
 	 
-	 public static Collection<Livro> getUserBooks(User usuario) {
-		 Collection<Livro> livrosUsuario = new ArrayList<Livro>();
-		 
-		 //TODO: Pegar livros do usuario na DB. Meh...
-		 
-		 return livrosUsuario;
-	 }
+
 	 public static User registerUser(String userName, String password) {
 		 if(conn == null)
 			 getConnection();
 		 
 		 if(userExists(userName)) {
-			 System.out.println("Usuario ja existe!");
-			 //TODO: popup.
 			 return null;
 		 }
 		 
@@ -106,7 +99,7 @@ public class Database {
 		 return true;
 	 }
 	 
-	 public static boolean reservaLivro(Livro livro) {
+	 public static boolean setBookStatus(Livro livro, String newStatus) {
 		 
 		 if(livro == null)
 			 return false;
@@ -116,8 +109,9 @@ public class Database {
 		 
 		 PreparedStatement stmt = null;
 		 try {
-			 stmt = conn.prepareStatement("update livros SET status = 'RESERVADO' where id = ?", Statement.RETURN_GENERATED_KEYS);
-			 stmt.setInt(1, livro.getId());
+			 stmt = conn.prepareStatement("update livros SET status = ? where id = ?", Statement.RETURN_GENERATED_KEYS);
+			 stmt.setString(1, newStatus);
+			 stmt.setInt(2, livro.getId());
 
 			 stmt.executeUpdate();
 			 
@@ -137,6 +131,95 @@ public class Database {
 		 }
 		 
 		 return true;
+	 }
+
+	public static boolean setTransactionStatus(Transaction trans, String newStatus) {
+	 
+	 if(trans == null)
+		 return false;
+	 
+	 if(conn == null)
+		 getConnection();
+	 
+	 PreparedStatement stmt = null;
+	 try {
+		 stmt = conn.prepareStatement("update transacao SET status = ? where id = ?", Statement.RETURN_GENERATED_KEYS);
+		 stmt.setString(1, newStatus);
+		 stmt.setInt(2, trans.getId());
+
+		 stmt.executeUpdate();
+		 
+	 }
+	 catch (SQLException e) {
+		 e.printStackTrace();
+	 }
+     
+	 finally {
+		 if(stmt != null) {
+			try {
+				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		 }
+	 }
+	 
+	 return true;
+}
+	 public static Livro getBook(int id) {
+		 
+		 if(id <= 0)
+			 return null;
+		 
+		 if(conn == null)
+			 getConnection();
+		 
+		 Livro bookFound = null;
+		 
+		 PreparedStatement stmt = null;
+		 ResultSet rs = null;
+		 try {
+			 stmt = conn.prepareStatement("Select * from livros WHERE id = ?");
+			 
+			 stmt.setInt(1, id);
+			 
+			 rs = stmt.executeQuery();
+			 
+			  if ( rs.next() ) {
+				  
+				  bookFound = new Livro();
+				  
+				  bookFound.setId(rs.getInt("id"));
+				  bookFound.setIdOwner(rs.getInt("owner_id"));
+				  bookFound.setTitulo(rs.getString("title"));
+				  bookFound.setAutor(rs.getString("author"));
+				  bookFound.setDetalhes(rs.getString("detalhes"));
+			  }
+			  
+			  rs.close();
+		 }
+		 catch (SQLException e) {
+			 e.printStackTrace();
+		 }
+	      
+		 finally {
+			 if(stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			 }
+			 if(rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+			 }
+		 }
+		 
+		 return bookFound;
 	 }
 	 public static List<Livro> getBookList(User baseUser, boolean toRemove) {
 		 
@@ -194,6 +277,87 @@ public class Database {
 		 }
 		 
 		 return bookList;
+	 }
+	 public static boolean rejectTransaction(Transaction transaction) {
+		 
+		 Database.setTransactionStatus(transaction, "REJEITADA");
+		 
+		 Database.setBookStatus(Database.getBook(transaction.getBookID()), "POSSUI");
+		 
+		 Database.setBookStatus(Database.getBook(transaction.getTargetBookID()), "POSSUI");
+		 
+		 return true;
+	 }
+	 
+	 public static boolean acceptTransaction(Transaction transaction) {
+		 
+		 Database.setTransactionStatus(transaction, "ACEITA");
+		 
+		 Database.setBookStatus(Database.getBook(transaction.getBookID()), "TROCADO");
+		 
+		 Database.setBookStatus(Database.getBook(transaction.getTargetBookID()), "TROCADO");
+		 
+		 return true;
+	 }
+	 
+	 public static List<Transaction> getTransaction(User baseUser) {
+		 
+		 if(baseUser == null)
+			 return null;
+		 
+		 if(conn == null)
+			 getConnection();
+		 
+		 List<Transaction> transactionList = new ArrayList<Transaction>();
+		 
+		 PreparedStatement stmt = null;
+		 ResultSet rs = null;
+		 try {
+			 stmt = conn.prepareStatement("Select * from transacao WHERE target_owner_id = ? AND status = 'PENDENTE'");
+			 
+			 stmt.setInt(1, baseUser.getId());
+			 
+			 rs = stmt.executeQuery();
+			 
+			  while ( rs.next() ) {
+				  
+				  Transaction transacaoEncontrada = new Transaction();
+				  
+				  transacaoEncontrada.setId(rs.getInt("id"));
+				  transacaoEncontrada.setBookID(rs.getInt("book_id"));
+				  transacaoEncontrada.setTargetUserID(rs.getInt("target_owner_id"));
+				  transacaoEncontrada.setUserID(rs.getInt("id_owner"));
+				  transacaoEncontrada.setTargetBookID(rs.getInt("target_book_id"));
+				  transacaoEncontrada.setStatus("PENDENTE");
+			
+				  
+				  transactionList.add(transacaoEncontrada);
+			  }
+			  
+			  rs.close();
+		 }
+		 catch (SQLException e) {
+			 e.printStackTrace();
+		 }
+	      
+		 finally {
+			 if(stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			 }
+			 if(rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+			 }
+		 }
+		 
+		 return transactionList;
 	 }
 	 public static Livro registerBook(Livro bookToRegister) {
 		 
@@ -475,8 +639,8 @@ public class Database {
 			 }
 		 }
  
-		 reservaLivro(meuLivro);
-		 reservaLivro(livroDesejado);
+		 setBookStatus(meuLivro, "PENDENTE");
+		 setBookStatus(livroDesejado, "PENDENTE");
 		 
 		 return true;
 	}

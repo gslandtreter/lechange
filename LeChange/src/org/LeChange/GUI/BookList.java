@@ -177,9 +177,9 @@ public class BookList extends JFrame {
 							return;
 						}
 						
-						Livro livroDesejado = livros.get(selectedIndex);
+						Livro meuLivro = livros.get(selectedIndex);
 						
-						boolean retVal = Database.registerTransaction(User.getCurrentUser(), livroEscolhido, livroDesejado);
+						boolean retVal = Database.registerTransaction(User.getCurrentUser(), meuLivro, livroEscolhido);
 						
 						if(retVal) {
 							Popup popup = new Popup("Solicitacao enviada com sucesso!");

@@ -119,6 +119,8 @@ public class MainWindow {
 		JButton btnResolve = new JButton("Resolver Trocas");
 		btnResolve.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				TransactionList transactionWindow = new TransactionList();
+				transactionWindow.setVisible(true);
 				
 			}
 		});
