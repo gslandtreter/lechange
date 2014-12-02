@@ -1,6 +1,6 @@
 package org.LeChange.DAO;
 
-public class Admin extends Person {
+public class Admin extends User {
 
 	private final int isAdmin = 1;
 
@@ -8,4 +8,7 @@ public class Admin extends Person {
 		return isAdmin;
 	}
 	
+	public void Zoeira() {
+		
+	}
 }

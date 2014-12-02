@@ -83,7 +83,7 @@ public class Database {
 		 
 		 PreparedStatement stmt = null;
 		 try {
-			 stmt = conn.prepareStatement("DELETE from livros livros where id = ?");
+			 stmt = conn.prepareStatement("DELETE from livros where id = ?");
 			 stmt.setInt(1, livro.getId());
 
 			 stmt.executeUpdate();
@@ -105,6 +105,7 @@ public class Database {
 		 
 		 return true;
 	 }
+	 
 	 public static boolean reservaLivro(Livro livro) {
 		 
 		 if(livro == null)
@@ -137,7 +138,7 @@ public class Database {
 		 
 		 return true;
 	 }
-	 public static List<Livro> getBookList(User baseUser) {
+	 public static List<Livro> getBookList(User baseUser, boolean toRemove) {
 		 
 		 if(baseUser == null)
 			 return null;
@@ -150,7 +151,7 @@ public class Database {
 		 PreparedStatement stmt = null;
 		 ResultSet rs = null;
 		 try {
-			 stmt = conn.prepareStatement("Select * from livros WHERE owner_id != ? AND status = 'POSSUI'");
+			 stmt = conn.prepareStatement("Select * from livros WHERE owner_id " + (toRemove ? "" : "!") + "= ? AND status = 'POSSUI'");
 			 
 			 stmt.setInt(1, baseUser.getId());
 			 
@@ -396,7 +397,7 @@ public class Database {
 		 PreparedStatement stmt = null;
 		 ResultSet rs = null;
 		 try {
-			 stmt = conn.prepareStatement("Select * from usuarios WHERE username like ?");
+			 stmt = conn.prepareStatement("Select * from usuarios WHERE username like ? AND administrator = 0");
 			 
 			 stmt.setString(1, "%" + usernameLike + "%");
 			 
@@ -438,7 +439,46 @@ public class Database {
 		 }
 		 
 		 return userList;
-		
 	}
 	 
+	public static boolean registerTransaction(User user, Livro meuLivro, Livro livroDesejado) {
+		
+		if(user == null || meuLivro == null || livroDesejado == null)
+			return false;
+		
+		if(conn == null)
+			 getConnection(); 
+		 
+		 PreparedStatement stmt = null;
+		 try {
+			 stmt = conn.prepareStatement("Insert into transacao (id_owner, target_owner_id, book_id, target_book_id, status) VALUES (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			 stmt.setInt(1, user.getId());
+			 stmt.setInt(2, livroDesejado.getIdOwner());
+			 stmt.setInt(3, meuLivro.getId());
+			 stmt.setInt(4, livroDesejado.getId());
+			 stmt.setString(5, "PENDENTE");
+
+			 stmt.executeUpdate();
+			  
+		 }
+		 catch (SQLException e) {
+			 e.printStackTrace();
+		 }
+	      
+		 finally {
+			 if(stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			 }
+		 }
+ 
+		 reservaLivro(meuLivro);
+		 reservaLivro(livroDesejado);
+		 
+		 return true;
+	}
+	
 }

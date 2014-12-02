@@ -11,6 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 
+import org.LeChange.DAO.Admin;
+import org.LeChange.DAO.Person;
 import org.LeChange.DAO.User;
 import org.LeChange.Database.Database;
 
@@ -86,6 +88,7 @@ public class LoginWindow {
 				User usuario = Database.getUser(textUsername.getText(), textPassword.getText());
 				
 				if(usuario != null){
+					
 					User.setCurrentUser(usuario);
 					LoginOK();
 				}

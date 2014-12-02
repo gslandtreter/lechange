@@ -4,8 +4,6 @@ import java.util.Collection;
 
 public class User extends Person {
 
-	private int isAdmin;
-	
 	private Collection<Livro> livrosCadastrados;
 	private Collection<Livro> livrosDesejados;
 	
@@ -30,12 +28,4 @@ public class User extends Person {
 	public void setLivrosDesejados(Collection<Livro> livrosDesejados) {
 		this.livrosDesejados = livrosDesejados;
 	}
-	
-	public int getIsAdmin() {
-		return isAdmin;
-	}
-	public void setIsAdmin(int isAdmin) {
-		this.isAdmin = isAdmin;
-	}
-	
 }

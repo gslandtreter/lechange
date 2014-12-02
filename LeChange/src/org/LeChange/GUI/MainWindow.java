@@ -104,6 +104,27 @@ public class MainWindow {
 		btnBuscarUsuario.setBounds(20, 248, 160, 80);
 		frmLechange.getContentPane().add(btnBuscarUsuario);
 		
+		JButton btnTrocarLivros = new JButton("Trocar Livros");
+		btnTrocarLivros.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				BookList bookList = new BookList();
+				bookList.main(0);
+				
+			}
+		});
+		btnTrocarLivros.setBounds(200, 248, 178, 80);
+		frmLechange.getContentPane().add(btnTrocarLivros);
+		
+		JButton btnResolve = new JButton("Resolver Trocas");
+		btnResolve.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		btnResolve.setBounds(398, 66, 178, 80);
+		frmLechange.getContentPane().add(btnResolve);
+		
 		/*
 		JLabel lblSair = new JLabel("Sair");
 		lblSair.setFont(new Font("Tahoma", Font.PLAIN, 16));

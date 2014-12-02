@@ -29,6 +29,9 @@ public class BookList extends JFrame {
 	private DefaultListModel<String> model;
 	private List<Livro> livros;
 
+	private Livro livroEscolhido = null;
+	private BookList frame = null;
+
 	/**
 	 * Launch the application.
 	 */
@@ -36,7 +39,22 @@ public class BookList extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					BookList frame = new BookList(status);
+					frame = new BookList(status);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+		});
+	}
+	
+	public void main(final int status, final Livro livroEscolhido) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					frame = new BookList(status);
+					frame.livroEscolhido = livroEscolhido;
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -46,6 +64,9 @@ public class BookList extends JFrame {
 		});
 	}
 
+	public BookList() {
+		
+	}
 	/**
 	 * Create the frame.
 	 */
@@ -70,7 +91,7 @@ public class BookList extends JFrame {
 		btnDetalhes.setBounds(43, 228, 128, 23);
 		contentPane.add(btnDetalhes);
 		
-		if (status==0)
+		if (status==0) //Busca Livro
 		{
 			JButton btnSolicitaTroca = new JButton("Solicita Troca");
 			btnSolicitaTroca.addActionListener(new ActionListener() {
@@ -86,7 +107,11 @@ public class BookList extends JFrame {
 					
 					Livro livroSelecionado = livros.get(selectedIndex);
 					
-					boolean retVal = Database.reservaLivro(livroSelecionado);
+					
+					BookList telaEscolha = new BookList();
+					telaEscolha.main(2, livroSelecionado);
+					Dispose();
+					/*boolean retVal = Database.reservaLivro(livroSelecionado);
 					
 					if(retVal) {
 						Popup popup = new Popup("Livro reservado com sucesso!");
@@ -96,51 +121,91 @@ public class BookList extends JFrame {
 					else {
 						Popup popup = new Popup("Erro ao reservar livro!");
 						popup.main();
-					}
+					}*/
 				}
 			});
 			btnSolicitaTroca.setBounds(257, 228, 128, 23);
 			contentPane.add(btnSolicitaTroca);
 			
-			CarregaLivros();
+			CarregaLivros(status);
 		}
-		else
+		else //Listar meus livros
 		{
-			JButton btnExcluirLivro = new JButton("Excluir Livro");
-			btnExcluirLivro.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					
-					int selectedIndex = list.getSelectedIndex();
-					
-					if(selectedIndex == -1) {
-						Popup popup = new Popup("Selecione um livro!");
-						popup.main();
-						return;
+			if(status == 1) {
+				JButton btnExcluirLivro = new JButton("Excluir Livro");
+				btnExcluirLivro.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						
+						int selectedIndex = list.getSelectedIndex();
+						
+						if(selectedIndex == -1) {
+							Popup popup = new Popup("Selecione um livro!");
+							popup.main();
+							return;
+						}
+						
+						Livro livroSelecionado = livros.get(selectedIndex);
+						
+						boolean retVal = Database.excluiLivro(livroSelecionado);
+						
+						if(retVal) {
+							Popup popup = new Popup("Livro excluido com sucesso!");
+							popup.main();
+							Dispose();
+						}
+						else {
+							Popup popup = new Popup("Erro ao excluir livro!");
+							popup.main();
+						}
 					}
-					
-					Livro livroSelecionado = livros.get(selectedIndex);
-					
-					boolean retVal = Database.excluiLivro(livroSelecionado);
-					
-					if(retVal) {
-						Popup popup = new Popup("Livro excluido com sucesso!");
-						popup.main();
-						Dispose();
+				});
+			
+				btnExcluirLivro.setBounds(257, 228, 128, 23);
+				contentPane.add(btnExcluirLivro);
+				CarregaLivros(status);
+			}
+			else if(status == 2) {
+				JButton btnExcluirLivro = new JButton("OK!");
+				btnExcluirLivro.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						
+						int selectedIndex = list.getSelectedIndex();
+						
+						if(selectedIndex == -1) {
+							Popup popup = new Popup("Selecione um livro!");
+							popup.main();
+							return;
+						}
+						
+						Livro livroDesejado = livros.get(selectedIndex);
+						
+						boolean retVal = Database.registerTransaction(User.getCurrentUser(), livroEscolhido, livroDesejado);
+						
+						if(retVal) {
+							Popup popup = new Popup("Solicitacao enviada com sucesso!");
+							popup.main();
+							Dispose();
+						}
+						else {
+							Popup popup = new Popup("Erro ao enviar solicitacao!");
+							popup.main();
+						}
 					}
-					else {
-						Popup popup = new Popup("Erro ao excluir livro!");
-						popup.main();
-					}
-				}
-			});
-			btnExcluirLivro.setBounds(257, 228, 128, 23);
-			contentPane.add(btnExcluirLivro);
+				});
+			
+				btnExcluirLivro.setBounds(257, 228, 128, 23);
+				contentPane.add(btnExcluirLivro);
+				CarregaLivros(status);
+			}
 		}
 	}
 
-	private void CarregaLivros() {
+	private void CarregaLivros(int status) {
 		
-		livros = Database.getBookList(User.getCurrentUser());
+		if(status == 0)
+			livros = Database.getBookList(User.getCurrentUser(), false);
+		else
+			livros = Database.getBookList(User.getCurrentUser(), true);
 		
 		model = new DefaultListModel<String>();
 		
