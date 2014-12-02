@@ -21,6 +21,7 @@ import org.LeChange.DAO.User;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collection;
 import java.util.List;
 
 public class UserList extends JFrame {
@@ -57,7 +58,7 @@ public class UserList extends JFrame {
 	 */
 	public UserList(){
 		
-		setTitle("Buscar Usuário");
+		setTitle("Buscar Usuario");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPanel = new JPanel();
@@ -65,7 +66,7 @@ public class UserList extends JFrame {
 		setContentPane(contentPanel);
 		
 		models = new DefaultListModel<String>();
-		JList list = new JList(models);
+		final JList list = new JList(models);
 		//list = new JList<String>();
 		list.setBounds(10, 60, 412, 190);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -74,7 +75,7 @@ public class UserList extends JFrame {
 		contentPanel.setLayout(null);
 		contentPanel.add(list);
 		
-		JLabel lblNome = new JLabel("Digite o nome do usuário:");
+		JLabel lblNome = new JLabel("Digite o nome do usuario:");
 		lblNome.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNome.setBounds(1, 20, 150, 24);
 		contentPanel.add(lblNome);
@@ -85,17 +86,24 @@ public class UserList extends JFrame {
 		contentPanel.add(textUserName);
 		
 		/**
-		 * A ideia aqui é mostrar todos os usuários buscados na JList
+		 * A ideia aqui eh mostrar todos os usuarios buscados na JList
 		 */
 		
 		JButton btnBuscarUsuarios = new JButton("Buscar");
 		btnBuscarUsuarios.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				//models.addElement("Lourenço");
-				if(Database.userExists(textUserName.getText())){
-					// ESCREVER TRECHO QUE TRAZ SÓ NOME DO USUÁRIO DA DATABASE
-						
+				
+				String userNameLike = textUserName.getText();
+				
+				Collection<User> userList = Database.getUserList(userNameLike);
+				
+				models = new DefaultListModel<String>();
+				
+				for (User userMatch : userList) {
+					models.addElement(userMatch.getUserName());
 				}
+				
+				list.setModel(models);
 			}
 		});
 		btnBuscarUsuarios.setBounds(340, 20, 85, 22);

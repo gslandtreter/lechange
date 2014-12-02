@@ -73,6 +73,38 @@ public class Database {
 		 return getUser(userName, password);
 	 }
 	 
+	 public static boolean excluiLivro(Livro livro) {
+		 
+		 if(livro == null)
+			 return false;
+		 
+		 if(conn == null)
+			 getConnection();
+		 
+		 PreparedStatement stmt = null;
+		 try {
+			 stmt = conn.prepareStatement("DELETE from livros livros where id = ?");
+			 stmt.setInt(1, livro.getId());
+
+			 stmt.executeUpdate();
+			 
+		 }
+		 catch (SQLException e) {
+			 e.printStackTrace();
+		 }
+	      
+		 finally {
+			 if(stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			 }
+		 }
+		 
+		 return true;
+	 }
 	 public static boolean reservaLivro(Livro livro) {
 		 
 		 if(livro == null)
@@ -274,6 +306,7 @@ public class Database {
 			     userFound = new User();
 			     userFound.setId(id);
 			     userFound.setUserName(userName);
+			     userFound.setIsAdmin(rs.getInt("administrator"));
 			  }
 			  
 			  rs.close();
@@ -301,5 +334,111 @@ public class Database {
 		 
 		 return userFound;
 	 }
+	 
+	 public static User getUser(String userName) {
+		 
+		 if(conn == null)
+			 getConnection();
+		 
+		 User userFound = null;
+		 
+		 PreparedStatement stmt = null;
+		 ResultSet rs = null;
+		 try {
+			 stmt = conn.prepareStatement("Select * from usuarios WHERE username = ?");
+			 
+			 stmt.setString(1, userName);
+			 
+			 rs = stmt.executeQuery();
+			 
+			  if ( rs.next() ) {
+			     int id = rs.getInt("id");
+			     
+			     userFound = new User();
+			     userFound.setId(id);
+			     userFound.setUserName(userName);
+			     userFound.setIsAdmin(rs.getInt("administrator"));
+			  }
+			  
+			  rs.close();
+		 }
+		 catch (SQLException e) {
+			 e.printStackTrace();
+		 }
+	      
+		 finally {
+			 if(stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			 }
+			 if(rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+			 }
+		 }
+		 
+		 return userFound;
+	 }
+	 
+	public static Collection<User> getUserList(String usernameLike) {
+		
+		ArrayList<User> userList = new ArrayList<User>();
+		
+		if(conn == null)
+			 getConnection();
+
+		 PreparedStatement stmt = null;
+		 ResultSet rs = null;
+		 try {
+			 stmt = conn.prepareStatement("Select * from usuarios WHERE username like ?");
+			 
+			 stmt.setString(1, "%" + usernameLike + "%");
+			 
+			 rs = stmt.executeQuery();
+			 
+			  while ( rs.next() ) {
+			     int id = rs.getInt("id");
+			     
+			     User userFound = new User();
+			     
+			     userFound.setId(id);
+			     userFound.setUserName(rs.getString("username"));
+			     userFound.setIsAdmin(rs.getInt("administrator"));
+			     
+			     userList.add(userFound);
+			  }
+			  
+			  rs.close();
+		 }
+		 catch (SQLException e) {
+			 e.printStackTrace();
+		 }
+	      
+		 finally {
+			 if(stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			 }
+			 if(rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+			 }
+		 }
+		 
+		 return userList;
+		
+	}
 	 
 }

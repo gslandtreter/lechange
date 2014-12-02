@@ -5,6 +5,8 @@ import java.util.Collection;
 public class User {
 
 	private int id;
+	private int isAdmin;
+	
 	private String userName;
 	private Collection<Livro> livrosCadastrados;
 	private Collection<Livro> livrosDesejados;
@@ -42,6 +44,13 @@ public class User {
 	}
 	public void setLivrosDesejados(Collection<Livro> livrosDesejados) {
 		this.livrosDesejados = livrosDesejados;
+	}
+	
+	public int getIsAdmin() {
+		return isAdmin;
+	}
+	public void setIsAdmin(int isAdmin) {
+		this.isAdmin = isAdmin;
 	}
 	
 }

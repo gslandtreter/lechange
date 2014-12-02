@@ -123,7 +123,7 @@ public class BookList extends JFrame {
 					boolean retVal = Database.excluiLivro(livroSelecionado);
 					
 					if(retVal) {
-						Popup popup = new Popup("Livro excluído com sucesso!");
+						Popup popup = new Popup("Livro excluido com sucesso!");
 						popup.main();
 						Dispose();
 					}

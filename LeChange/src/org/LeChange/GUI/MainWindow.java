@@ -87,11 +87,18 @@ public class MainWindow {
 		btnExcluirLivros.setBounds(200, 157, 178, 80);
 		frmLechange.getContentPane().add(btnExcluirLivros);
 		
-		JButton btnBuscarUsuario = new JButton("Buscar Usuário");
+		JButton btnBuscarUsuario = new JButton("Buscar Usuario");
 		btnBuscarUsuario.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				UserList userWindow = new UserList();
-				userWindow.main();
+				
+				if(User.getCurrentUser().getIsAdmin() == 1) {
+					UserList userWindow = new UserList();
+					userWindow.main();
+				}
+				else {
+					Popup popup = new Popup("Voce nao possui privilegios de administrador!");
+					popup.main();
+				}
 			}
 		});
 		btnBuscarUsuario.setBounds(20, 248, 160, 80);
