@@ -2,12 +2,10 @@ package org.LeChange.DAO;
 
 import java.util.Collection;
 
-public class User {
+public class User extends Person {
 
-	private int id;
 	private int isAdmin;
 	
-	private String userName;
 	private Collection<Livro> livrosCadastrados;
 	private Collection<Livro> livrosDesejados;
 	
@@ -20,19 +18,6 @@ public class User {
 		User.currentUser = currentUser;
 	}
 	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	
-	public String getUserName() {
-		return userName;
-	}
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
 	public Collection<Livro> getLivrosCadastrados() {
 		return livrosCadastrados;
 	}
